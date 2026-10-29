@@ -30,3 +30,15 @@ When the user requests the result in words, provide a readable verbal rendering 
 - Do not report a task complete until the required reviews and test status are reported. Do not describe tests as passed unless they have completed successfully.
 
 This file captures the high-level goal. The orchestrator supplies the exact task, acceptance criteria, constraints, and required tools/MCP context for each run.
+
+## Approved initial implementation scope
+
+- **Interface:** provide both an importable Python API and a command-line interface, using the Python standard library unless repository conventions require otherwise.
+- **Symbolic expressions:** support decimal numeric literals, parentheses, unary `+`/`-`, binary `+`, `-`, `*`, `/`, and postfix `%` (a percentage literal, so `10%` is `0.1`) with conventional precedence. Accept optional `evaluate`/`calculate` prefixes. Parse with a strict grammar; never evaluate user input as Python code.
+- **Natural-language calculations:** support the supplied price-increase wording and a bounded common `X% of Y` form. Support simple arithmetic expressed with digit operands and the words “plus”, “minus”, “times”/“multiplied by”, and “divided by”. Do not attempt open-ended natural-language interpretation; reject unsupported requests clearly.
+- **Output modes:** the API accepts `numeric`, `words`, or `both`; default is `numeric`. The CLI uses numeric output unless the request explicitly asks for “in words” or “as words”; an explicit “both” request returns both forms.
+- **Numbers and currency:** use decimal arithmetic. Avoid rounding intermediate results; render normalized numeric results without unnecessary trailing zeroes. Format currency in rupees, omitting paise for whole rupees and rounding fractional rupees to two decimal places using `ROUND_HALF_UP`. Convert finite decimal results to English words, using “point” followed by decimal digits; support absolute values below `10**15` and at most 64 fractional digits in words mode.
+- **Output contract:** `calculator.calculate(request, output="numeric")` returns a string; `output` is one of `numeric`, `words`, or `both`. Numeric results use normalized decimal notation, while price-increase requests use `Rs N/-` notation. Words mode returns the verbal form only; both mode returns the numeric form followed by the words in parentheses. The CLI is `python -m calculator [--output numeric|words|both] REQUEST`; absent `--output`, a trailing “in words”/“as words” or “both” selects the corresponding mode, otherwise numeric is the default.
+- **Errors and safety:** reject malformed, unsupported, or excessively long inputs with a clear error; handle division by zero explicitly; do not use `eval` or `exec`. Add reasonable expression-size and numeric-magnitude limits.
+
+These are the initial release boundaries, not a claim of general natural-language understanding. Tests must cover all three supplied examples and the behaviors above.
