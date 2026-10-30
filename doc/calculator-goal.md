@@ -27,6 +27,8 @@ When the user requests the result in words, provide a readable verbal rendering 
 - Keep implementation logic in source code and describe the approach in `doc/executor-report.md`.
 - Planner records the full task breakdown and progress in `doc/planner-tasks.md`.
 - Reviewer records test-set and implementation review results in `doc/reviewer-report.md`.
+- Tests use pytest; install the development dependency with `python3 -m pip install -r requirements-dev.txt` and run the complete suite with `python3 -m pytest -v`.
+- `./run_all_tests_cli.sh` runs representative requests through the actual CLI and reports each result.
 - Do not report a task complete until the required reviews and test status are reported. Do not describe tests as passed unless they have completed successfully.
 
 This file captures the high-level goal. The orchestrator supplies the exact task, acceptance criteria, constraints, and required tools/MCP context for each run.
